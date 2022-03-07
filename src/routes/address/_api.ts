@@ -1,15 +1,78 @@
-const base = 'https://explorer.roninchain.com/api';
+const baseApi = 'https://explorer.roninchain.com/api';
+
+const decoderApi = 'https://decoder.roninchain.com/decoder';
 
 export type Address = string;
 
+export type Timestamp = number;
+
 export type Resource = 'address' | 'txs'
 
-export function api(method: 'GET', resource: Resource, id: Address, data = null) {
-        return fetch(`${base}/${resource}/${id}`, {
+export type Success =  1;
+
+export type TransactionState = Success;
+
+export type TransactionType = 'Transfer SLP' | 'Claim SLP' | 'Transfer Axie'
+
+export type User = {
+        address: Address,
+        at_block?: any,
+        at_tx?: any,
+        balance: string,
+        block_number: number,
+        contract_creator?: any,
+        erc20_networth: number,
+        timestamp: number,
+        total_nfts: number,
+        transaction_count: string,
+        validator?: any
+};
+
+export type Transaction = {
+        block_hash: string,
+        block_number: number,
+        confirmed: boolean,
+        contract_address?: string,
+        cumulative_gas_user: string,
+        from: Address,
+        gas: string,
+        gas_price: string,
+        gas_used: string,
+        hash: string,
+        input: string,
+        nonce: number,
+        published: Timestamp,
+        status: TransactionState,
+        timestamp: Timestamp,
+        to: Address,
+        tx_index: number,
+        value: string
+};
+
+export type TransactionResponse = {
+        total: number,
+        results: Transaction[]
+};
+
+export type ActionsResponse = {
+        data: TransactionType[]
+}
+
+export function api(method: 'GET', resource: Resource, id: Address) {
+        return fetch(`${baseApi}/${resource}/${id}`, {
+                method,
+                headers: {
+                        'content-type': 'application/json'
+                }
+        });
+}
+
+export function decoder(method: 'POST', resource: 'decoder', data: Transaction[]) {
+        return fetch(`${decoderApi}/${resource}`, {
                 method,
                 headers: {
                         'content-type': 'application/json'
                 },
-                body: data && JSON.stringify(data)
+                body: JSON.stringify(data)
         });
 }

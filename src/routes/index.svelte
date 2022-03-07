@@ -1,20 +1,8 @@
 <script lang="ts">
 
-let user: User;
+import type { User } from "./address";
 
-type User = {
-        address: string,
-        at_block?: any,
-        at_tx?: any,
-        balance: string,
-        block_number: number,
-        contract_creator?: any,
-        erc20_networth: number,
-        timestamp: number,
-        total_nfts: number,
-        transaction_count: string,
-        validator?: any
-};
+let user: User;
 
 type Handler = (params: {
         form: HTMLFormElement,
@@ -98,6 +86,6 @@ function enhance(form, { pending, error, result }: EventHandler) {
 
 <main>
         {#if user}
-                <p>{user?.address}</p>
+                <p>{user?.id}</p>
         {/if}
 </main>
