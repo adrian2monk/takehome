@@ -6,13 +6,11 @@ export type Address = string;
 
 export type Timestamp = number;
 
+export type TransactionType = string;
+
+export type TransactionState = number;
+
 export type Resource = 'address' | 'txs'
-
-export type Success =  1;
-
-export type TransactionState = Success;
-
-export type TransactionType = 'Transfer SLP' | 'Claim SLP' | 'Transfer Axie'
 
 export type User = {
         address: Address,
@@ -49,6 +47,11 @@ export type Transaction = {
         value: string
 };
 
+export type ActionRequest = {
+        contractAddress: Address,
+        callData: string
+}
+
 export type TransactionResponse = {
         total: number,
         results: Transaction[]
@@ -58,8 +61,8 @@ export type ActionsResponse = {
         data: TransactionType[]
 }
 
-export function api(method: 'GET', resource: Resource, id: Address) {
-        return fetch(`${baseApi}/${resource}/${id}`, {
+export function api(method: 'GET', resource: Resource, id: Address, params?: URLSearchParams) {
+        return fetch(`${baseApi}/${resource}/${id}` + (params ? `?${params.toString()}` : ''), {
                 method,
                 headers: {
                         'content-type': 'application/json'
@@ -67,7 +70,7 @@ export function api(method: 'GET', resource: Resource, id: Address) {
         });
 }
 
-export function decoder(method: 'POST', resource: 'decoder', data: Transaction[]) {
+export function decoder(method: 'POST', resource: 'actions', data: { txs: ActionRequest[] }) {
         return fetch(`${decoderApi}/${resource}`, {
                 method,
                 headers: {
