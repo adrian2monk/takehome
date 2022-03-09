@@ -44,8 +44,11 @@ export async function post({ request }) {
 		user?: User,
 		txs?: Stats[]
 	} = {};
-	const address = /** append hex prefix */ (await request.formData()).get('address').replace('ronin:', '0x');
-	const [resUser, resTxs] = await Promise.all([api('GET', 'address', address), api('GET', 'txs', address)]);
+	const data = await request.formData();
+	const from = data.get('page') || '0';
+	const size = data.get('count') || '10';
+	const address = /** append hex prefix */ data.get('address').replace('ronin:', '0x');
+	const [resUser, resTxs] = await Promise.all([api('GET', 'address', address), api('GET', 'txs', address, new URLSearchParams({ from, size }))]);
 
 	if (resUser.status === 404) {
                 return { body };

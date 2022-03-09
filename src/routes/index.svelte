@@ -1,5 +1,7 @@
 <script lang="ts">
 
+import { fade } from "svelte/transition";
+
 import type { Stats, User } from "./address";
 
 const assetsApi = 'https://assets.axieinfinity.com/explorer/images/contract-icon';
@@ -7,6 +9,10 @@ const assetsApi = 'https://assets.axieinfinity.com/explorer/images/contract-icon
 let user: User;
 
 let txs: Stats[];
+
+let address: string;
+
+let count: number = 10;
 
 type Handler = (params: {
         form: HTMLFormElement,
@@ -30,15 +36,13 @@ function enhance(form, { pending, error, result }: EventHandler) {
                 const data = new FormData(form);
 
                 if (pending) {
-			pending({ data, form });
+			return pending({ data, form });
 		}
 
                 try {
                         const response = await fetch(form.action, {
                                 method: form.method,
-                                headers: {
-                                        accept: 'applicaiton/json'
-                                },
+                                headers: { accept: 'application/json' },
                                 body: data
                         });
                         if (response.ok) {
@@ -94,8 +98,9 @@ function assetByType(txType: string): Asset {
                 use:enhance={{
                         result: async ({ form, response }) => {
                                 const data = await response.json();
-                                user = data.user;
                                 txs = data.txs;
+                                user = data.user;
+                                address = user && user.id.replace('0x', 'ronin:');
                                 form.reset();
                         }
                 }}
@@ -153,10 +158,68 @@ function assetByType(txType: string): Asset {
                 </div>
         {/if}
         {#if txs}
-                <h2 class="mx-2 md:text-md md:mx-4 xl:max-w-5xl xl:mx-auto text-sky-300 my-3">Sneak Peak of top transaction stats</h2>
+                <div class="flex mx-2 my-3 md:text-md md:mx-4 xl:max-w-5xl xl:mx-auto">
+                        <h2 class="grow text-sky-300">Sneak Peak of top transaction stats</h2>
+                        <nav class="flex gap-1 rounded-md bg-slate-100 p-1">
+                                <form
+                                        action="/address"
+                                        method="post"
+                                        use:enhance={{
+                                                result: async ({ form, response }) => {
+                                                        const data = await response.json();
+                                                        txs = data.txs;
+                                                        count = 10;
+                                                        form.reset();
+                                                }
+                                        }}
+                                >
+                                        <input name="address" type="hidden" bind:value="{address}" />
+                                        <input name="count" type="hidden" value="10" />
+                                        <button 
+                                                disabled={count === 10} 
+                                                class="transition rounded-md px-3 py-1 text-slate-500 font-light opacity-75 hover:bg-white hover:text-sky-200 hover:opacity-100 disabled:text-sky-300 disabled:font-medium disabled:bg-white disabled:opacity-100">10</button>
+                                </form>
+                                <form
+                                        action="/address"
+                                        method="post"
+                                        use:enhance={{
+                                                result: async ({ form, response }) => {
+                                                        const data = await response.json();
+                                                        txs = data.txs;
+                                                        count = 50;
+                                                        form.reset();
+                                                }
+                                        }}
+                                >
+                                        <input name="address" type="hidden" bind:value="{address}" />
+                                        <input name="count" type="hidden" value="50" />
+                                        <button 
+                                                disabled={count === 50} 
+                                                class="transition rounded-md px-3 py-1 text-slate-500 font-light opacity-75 hover:bg-white hover:text-sky-200 hover:opacity-100 disabled:text-sky-300 disabled:font-medium disabled:bg-white disabled:opacity-100">50</button>
+                                </form>
+                                <form
+                                        action="/address"
+                                        method="post"
+                                        use:enhance={{
+                                                result: async ({ form, response }) => {
+                                                        const data = await response.json();
+                                                        txs = data.txs;
+                                                        count = 100;
+                                                        form.reset();
+                                                }
+                                        }}
+                                >
+                                        <input name="address" type="hidden" bind:value="{address}" />
+                                        <input name="count" type="hidden" value="100" />
+                                        <button 
+                                                disabled={count === 100} 
+                                                class="transition rounded-md px-3 py-1 text-slate-500 font-light opacity-75 hover:bg-white hover:text-sky-200 hover:opacity-100 disabled:text-sky-300 disabled:font-medium disabled:bg-white disabled:opacity-100">100</button>
+                                </form>
+                        </nav>
+                </div>
                 <div class="grid mx-2 md:mx-0 md:grid-cols-3 md:grid-flow-row md:gap-4 md:mx-4 xl:max-w-5xl xl:mx-auto">
                         {#each txs as tx}
-                                <section class="flex rounded-md bg-white drop-shadow-md mt-6 p-2">
+                                <section transition:fade class="flex rounded-md bg-white drop-shadow-md mt-6 p-2">
                                         <img class="h-10 w-10" src="{assetsApi + `/${assetByType(tx.name)}.png`}" alt="Market Place" />
                                         <div class="ml-3 overflow-hidden">
                                                 <p class="text-sm uppercase text-slate-500">{tx.name}</p>
