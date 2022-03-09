@@ -21,6 +21,8 @@ type EventHandler = {
         error?: Handler
 };
 
+type Asset = 'common-contract' | 'axs' | 'eth' | 'axie' | 'marketplace' | 'slp';
+
 function enhance(form, { pending, error, result }: EventHandler) {
 
         async function handleSubmit(e) {
@@ -60,6 +62,27 @@ function enhance(form, { pending, error, result }: EventHandler) {
                 }
         };
 }
+
+function assetByType(txType: string): Asset {
+        const input = txType.toLowerCase();
+        if (input.includes('sale')) {
+                return 'marketplace';
+        }
+        if (input.includes('axs')) {
+                return 'axs';
+        }
+        if (input.includes('slp')) {
+                return 'slp';
+        }
+        if (input.includes('weth')) {
+                return 'eth';
+        }
+        if (input.includes('axie')) {
+                return 'axie';
+        }
+        return 'common-contract';
+}
+
 </script>
 
 <header class="px-6">
@@ -130,11 +153,11 @@ function enhance(form, { pending, error, result }: EventHandler) {
                 </div>
         {/if}
         {#if txs}
-                <h2 class="md:text-md md:mx-4 xl:max-w-5xl xl:mx-auto text-sky-300 my-3">Sneak Peak of top transaction stats</h2>
-                <div class="grid md:grid-cols-3 md:grid-flow-row md:gap-4 md:mx-4 xl:max-w-5xl xl:mx-auto">
+                <h2 class="mx-2 md:text-md md:mx-4 xl:max-w-5xl xl:mx-auto text-sky-300 my-3">Sneak Peak of top transaction stats</h2>
+                <div class="grid mx-2 md:mx-0 md:grid-cols-3 md:grid-flow-row md:gap-4 md:mx-4 xl:max-w-5xl xl:mx-auto">
                         {#each txs as tx}
                                 <section class="flex rounded-md bg-white drop-shadow-md mt-6 p-2">
-                                        <img class="h-10 w-10" src="{assetsApi + '/marketplace.png'}" alt="Market Place" />
+                                        <img class="h-10 w-10" src="{assetsApi + `/${assetByType(tx.name)}.png`}" alt="Market Place" />
                                         <div class="ml-3 overflow-hidden">
                                                 <p class="text-sm uppercase text-slate-500">{tx.name}</p>
                                                 <p class="text-2xl font-bold text-slate-900">{tx.count}</p>

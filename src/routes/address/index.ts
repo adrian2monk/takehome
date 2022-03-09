@@ -65,7 +65,7 @@ export async function post({ request }) {
 
         if (resTxs.status === 200) {
                 const txs = /** @type {import('./api').TransactionResponse} */ (await resTxs.json()).results;
-		const resTypes = await decoder('POST', 'actions', { txs: txs.map(actionsMap) });
+		const resTypes = await decoder('POST', 'actions', { txs: txs.filter(tx => tx.status === success).map(actionsMap) });
 		const stats = new Map<string, number>()
 		resTypes.status === 200 && /**  @type {import('./_api').ActionsResponse} */ (await resTypes.json()).data
 			.forEach(txsType => stats.has(txsType) ? stats.set(txsType, stats.get(txsType) + 1) : stats.set(txsType, 1));
