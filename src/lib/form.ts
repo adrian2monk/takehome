@@ -15,7 +15,7 @@ export function enhance(form, { pending, error, result }: EventHandler) {
 	async function handleSubmit(e) {
 		e.preventDefault();
 		let body = null;
-		let search = new URLSearchParams();
+		const search = new URLSearchParams();
 		const data = new FormData(form);
 
 		if (pending) {

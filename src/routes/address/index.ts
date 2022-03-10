@@ -1,4 +1,4 @@
-import { api, type Address, type TransactionState, type TransactionType } from './_api';
+import { api, type Address, type TransactionType } from './_api';
 
 export type State = 'success' | 'failure';
 

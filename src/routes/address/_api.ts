@@ -14,16 +14,16 @@ export type Resource = 'address' | 'txs';
 
 export type User = {
 	address: Address;
-	at_block?: any;
-	at_tx?: any;
+	at_block?: string;
+	at_tx?: string;
 	balance: string;
 	block_number: number;
-	contract_creator?: any;
+	contract_creator?: string;
 	erc20_networth: number;
 	timestamp: number;
 	total_nfts: number;
 	transaction_count: string;
-	validator?: any;
+	validator?: string;
 };
 
 export type Transaction = {
