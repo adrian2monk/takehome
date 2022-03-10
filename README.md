@@ -8,38 +8,13 @@ For instance, this the address corresponding to a scholar: `ronin:4d51e82c92c5e8
 
 Here's the link to the Ronin explorer: https://explorer.roninchain.com. Note that there is no documentation for the endpoints of this API. Go ahead and dig into the network console to find the relevant ones for this assigment. If you are stuck and cannot figure them out, please ping us so we can provide you with them.
 
-Deliverable:
-
-- Please fork this repo and push your solution.
-- Runnable code + appropriate testing + documentation.
-
-Evaluation Criteria:
-
-We should be able to execute your solution without much hassle, and the app should be intuitive to use. We will evaluate your code based on clarity, performance, and maintainability. Make sure to include relevant tests and documentation.
-
-Let us know if you have any questions. Happy coding!
-
-# Create-svelte
+# Developing
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
 
-## Creating a project
+## Run
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm init svelte@next
-
-# create a new project in my-app
-npm init svelte@next my-app
-```
-
-> Note: the `@next` is temporary
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Once you're cloned the repo and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
 ```bash
 npm run dev
@@ -50,7 +25,7 @@ npm run dev -- --open
 
 ## Building
 
-To create a production version of your app:
+To create a production version:
 
 ```bash
 npm run build

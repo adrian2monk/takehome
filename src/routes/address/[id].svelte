@@ -141,7 +141,7 @@
 {/if}
 {#if stats}
 	<div class="flex mx-2 my-3 md:text-md md:mx-4 xl:max-w-5xl xl:mx-auto">
-		<h2 class="grow text-sky-300">Sneak Peak of top transaction stats</h2>
+		<h2 class="grow text-sky-300 capitalize">top transaction stats</h2>
 		<nav class="flex gap-1 rounded-md bg-slate-100 p-1">
 			{#if total > 10}
 				<PaginatedSearch bind:id page={1} count={10}>
