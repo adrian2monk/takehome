@@ -145,7 +145,7 @@ function labelByType(txType: string) {
                         </section>
                 {/each}
         </div>
-        <div class="flex flex-row-reverse gap-4 mt-6 mx-2 lg:mx-4 xl:max-w-5xl xl:mx-auto">
+        <div class="flex justify-around gap-4 mt-6 mx-2 lg:flex-row-reverse lg:justify-start lg:mx-4 xl:max-w-5xl xl:mx-auto">
                 <div class="flex items-center">
                         <PaginatedSearch bind:id bind:count page={0}>
                                 <button class="px-4 py-2 rounded-md hover:bg-slate-100 font-medium text-sky-500">First</button>
@@ -171,7 +171,7 @@ function labelByType(txType: string) {
                                 <button class="px-4 py-2 rounded-md hover:bg-slate-100 font-medium text-sky-500">End</button>
                         </PaginatedSearch>
                 </div>
-                <h3 class="self-center font-light text-slate-500">Records</h3>
+                <h3 class="hidden lg:block self-center font-light text-slate-500">Records</h3>
         </div>
         <table class="hidden border-collapse w-full table-fixed mx-2 mt-3 lg:table lg:mx-4 xl:max-w-5xl xl:mx-auto">
                 <thead class="rounded-md sticky top-0 whitespace-nowrap z-sticky">
@@ -204,4 +204,41 @@ function labelByType(txType: string) {
                         {/each}
                 </tbody>
         </table>
+        <div class="lg:hidden w-full mx-2 mt-3">
+                {#each txs as tx}
+                        <section class="grid grid-cols-1 border-b p-2">
+                                <div class="flex p-4 place-content-between">
+                                        <h3 class="font-light text-left text-sm uppercase text-slate-500">tx hash</h3>
+                                        <p class="text-sm text-slate-400 truncate">{tx.id}</p>
+                                </div>
+                                <div class="flex p-4 place-content-between">
+                                        <h3 class="font-light text-left text-sm uppercase text-slate-500">action</h3>
+                                        <p class="text-sm">{tx.txs_type}</p>
+                                </div>
+                                <div class="flex p-4 place-content-between">
+                                        <h3 class="font-light text-left text-sm uppercase text-slate-500">block</h3>
+                                        <p class="text-sm">{tx.block}</p>
+                                </div>
+                                <div class="flex p-4 place-content-between">
+                                        <h3 class="font-light text-left text-sm uppercase text-slate-500">age</h3>
+                                        <p class="text-sm text-slate-400 capitalize">{formatDistanceToNow(tx.txs_date, { addSuffix: true })}</p>
+                                </div>
+                                <div class="flex p-4 place-content-between">
+                                        <h3 class="font-light text-left text-sm uppercase text-slate-500">status</h3>
+                                        <p class="text-sm font-medium capitalize" class:text-green-500="{tx.status === 'success'}" class:text-red-500="{tx.status === 'failure'}">{tx.status}</p>
+                                </div>
+                                <div class="flex p-4 place-content-between">
+                                        <h3 class="font-light text-left text-sm uppercase text-slate-500">to</h3>
+                                        <a class="text-sky-600" href="{`/address/${tx.to}`}">
+                                                <img class="h-5 w-5 float-left" src="{assetsApi + `/${assetByType(tx.txs_type)}.png`}" alt="Market Place" />
+                                                <span class="capitalize underline truncate">{labelByType(tx.txs_type)}</span>
+                                        </a>
+                                </div>
+                                <div class="flex p-4 place-content-between">
+                                        <h3 class="font-light text-left text-sm uppercase text-slate-500">value</h3>
+                                        <p class="text-sm font-bold">{tx.value} RON</p>
+                                </div>
+                        </section>
+                {/each}
+        </div>
 {/if}
