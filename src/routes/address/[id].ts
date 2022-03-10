@@ -55,7 +55,7 @@ export async function get({ request, params }) {
 		body.txs = txs.map(txsMap);
 		resTypes.status === 200 &&
 			/**  @type {import('./_api').ActionsResponse} */ (await resTypes.json()).data.forEach(
-				(txsType, i) => {
+				(txsType: string, i: number) => {
 					stats.has(txsType) ? stats.set(txsType, stats.get(txsType) + 1) : stats.set(txsType, 1);
 					body.txs[i].txs_type = txsType;
 				}

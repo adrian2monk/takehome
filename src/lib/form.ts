@@ -11,8 +11,8 @@ export type EventHandler = {
 	error?: Handler;
 };
 
-export function enhance(form, { pending, error, result }: EventHandler) {
-	async function handleSubmit(e) {
+export function enhance(form: HTMLFormElement, { pending, error, result }: EventHandler) {
+	async function handleSubmit(e: Event) {
 		e.preventDefault();
 		let body = null;
 		const search = new URLSearchParams();
