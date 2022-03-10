@@ -2,7 +2,9 @@
 
 import { fade } from "svelte/transition";
 
-import type { Stats, User } from ".";
+import { formatDistanceToNow } from 'date-fns';
+
+import type { Stats, User, Transaction } from ".";
 
 import SearchWithCount from "$lib/SearchWithCount.svelte";
 
@@ -10,7 +12,9 @@ const assetsApi = 'https://assets.axieinfinity.com/explorer/images/contract-icon
 
 export let user: User;
 
-export let txs: Stats[];
+export let stats: Stats[];
+
+export let txs: Transaction[];
 
 export let id: string;
 
@@ -33,13 +37,36 @@ function assetByType(txType: string): Asset {
         if (input.includes('slp')) {
                 return 'slp';
         }
-        if (input.includes('weth')) {
+        if (input.includes('weth') || input.includes('approve')) {
                 return 'eth';
         }
         if (input.includes('axie')) {
                 return 'axie';
         }
         return 'common-contract';
+}
+
+function labelByType(txType: string) {
+        const input = txType.toLowerCase();
+        if (input.includes('sale')) {
+                return 'marketplace contract';
+        }
+        if (input.includes('axs')) {
+                return 'axs staking pool contract';
+        }
+        if (input.includes('slp')) {
+                return 'smooth love postion contract';
+        }
+        if (input.includes('weth') || input.includes('approve')) {
+                return 'roning WETH contract';
+        }
+        if (input.includes('axie')) {
+                return 'axie contract';
+        }
+        if (input.includes('swap')) {
+                return 'katana router contract';
+        }
+        return 'common contract';
 }
 
 </script>
@@ -82,7 +109,7 @@ function assetByType(txType: string): Asset {
                 </div>
         </div>
 {/if}
-{#if txs}
+{#if stats}
         <div class="flex mx-2 my-3 md:text-md md:mx-4 xl:max-w-5xl xl:mx-auto">
                 <h2 class="grow text-sky-300">Sneak Peak of top transaction stats</h2>
                 <nav class="flex gap-1 rounded-md bg-slate-100 p-1">
@@ -91,8 +118,8 @@ function assetByType(txType: string): Asset {
                         <SearchWithCount bind:id bind:count total={total} /> 
                 </nav>
         </div>
-        <div class="grid mx-2 md:mx-0 md:grid-cols-3 md:grid-flow-row md:gap-4 md:mx-4 xl:max-w-5xl xl:mx-auto">
-                {#each txs as tx}
+        <div class="grid mx-2 md:grid-cols-3 md:grid-flow-row md:gap-4 md:mx-4 xl:max-w-5xl xl:mx-auto">
+                {#each stats as tx}
                         <section transition:fade class="flex rounded-md bg-white drop-shadow-md mt-6 p-2">
                                 <img class="h-10 w-10" src="{assetsApi + `/${assetByType(tx.name)}.png`}" alt="Market Place" />
                                 <div class="ml-3 overflow-hidden">
@@ -102,4 +129,35 @@ function assetByType(txType: string): Asset {
                         </section>
                 {/each}
         </div>
+        <table class="hidden  border-collapse w-full table-fixed mt-6 mx-2 lg:table lg:mx-4 xl:max-w-5xl xl:mx-auto">
+                <thead class="rounded-md sticky top-0 whitespace-nowrap z-sticky">
+                        <tr class="font-light text-left text-sm uppercase text-slate-500 bg-slate-100">
+                                <th class="p-2">tx hash</th>
+                                <th class="p-2">action</th>
+                                <th class="p-2">block</th>
+                                <th class="p-2">age</th>
+                                <th class="p-2">status</th>
+                                <th class="p-2">to</th>
+                                <th class="p-2">value</th>
+                        </tr>
+                </thead>
+                <tbody>
+                        {#each txs as tx}
+                                <tr class="border-b hover:bg-slate-100">
+                                        <td class="p-6 text-sm text-slate-400 truncate">{tx.id}</td>
+                                        <td class="p-6 text-sm">{tx.txs_type}</td>
+                                        <td class="p-6 text-sm">{tx.block}</td>
+                                        <td class="p-6 text-sm text-slate-400 capitalize">{formatDistanceToNow(tx.txs_date, { addSuffix: true })}</td>
+                                        <td class="p-6 text-sm font-medium capitalize" class:text-green-500="{tx.status === 'success'}" class:text-red-500="{tx.status === 'failure'}">{tx.status}</td>
+                                        <td class="py-6 text-sm truncate">
+                                                <a class="text-sky-600" href="{`/address/${tx.to}`}">
+                                                        <img class="h-5 w-5 float-left" src="{assetsApi + `/${assetByType(tx.txs_type)}.png`}" alt="Market Place" />
+                                                        <span class="capitalize underline truncate">{labelByType(tx.txs_type)}</span>
+                                                </a>
+                                        </td>
+                                        <td class="p-6 text-sm font-bold">{tx.value} RON</td>
+                                </tr>
+                        {/each}
+                </tbody>
+        </table>`
 {/if}
