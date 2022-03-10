@@ -5,29 +5,29 @@ export type State = 'success' | 'failure';
 export type Account = 'breeder' | 'scholar';
 
 export type User = {
-	id: Address,
-	account: Account,
-	balance: string,
-	total_nfts: number,
-	total_erc20: number,
-	total_transactions: string
+	id: Address;
+	account: Account;
+	balance: string;
+	total_nfts: number;
+	total_erc20: number;
+	total_transactions: string;
 };
 
 export type Stats = {
-	name: string,
-	count: number
-	amount?: number,
-	currency?: 'slp' | 'axs' | 'ron'
+	name: string;
+	count: number;
+	amount?: number;
+	currency?: 'slp' | 'axs' | 'ron';
 };
 
 export type Transaction = {
-	id: string,
-	to: Address,
-	block: number,
-	value: string,
-	status: State,
-	txs_date: Date,
-	txs_type?: TransactionType,
+	id: string;
+	to: Address;
+	block: number;
+	value: string;
+	status: State;
+	txs_date: Date;
+	txs_type?: TransactionType;
 };
 
 /** @type {import('./index').RequestHandler} */
@@ -37,13 +37,13 @@ export async function get({ request }) {
 	const resUser = await api('GET', 'address', id);
 
 	if (resUser.status === 404) {
-                return {
+		return {
 			status: 404,
 			body: null
 		};
-        }
+	}
 
-        return {
-		body: { id },
-        };
+	return {
+		body: { id }
+	};
 }
