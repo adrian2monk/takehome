@@ -11,7 +11,7 @@ const txsMap = ({ to, value, status, timestamp, hash, block_number }): Transacti
 	status: status === success ? 'success' : 'failure',
 	id: hash,
 	block: block_number,
-	txs_date: new Date(timestamp * 1000)
+	txs_date: timestamp * 1000
 });
 
 /** @type {import('./[id]').RequestHandler} */

@@ -158,7 +158,10 @@
 			</PaginatedSearch>
 		</nav>
 	</div>
-	<div class="grid mx-2 md:grid-cols-3 md:grid-flow-row md:gap-4 md:mx-4 xl:max-w-5xl xl:mx-auto">
+	<div
+		id="stats"
+		class="grid mx-2 md:grid-cols-3 md:grid-flow-row md:gap-4 md:mx-4 xl:max-w-5xl xl:mx-auto"
+	>
 		{#each stats as tx}
 			<section transition:fade class="flex rounded-md bg-white drop-shadow-md mt-6 p-2">
 				<img
@@ -267,7 +270,7 @@
 			{/each}
 		</tbody>
 	</table>
-	<div class="lg:hidden w-full mx-2 mt-3">
+	<div id="txs" class="lg:hidden w-full mx-2 mt-3">
 		{#each txs as tx}
 			<section class="grid grid-cols-1 border-b p-2">
 				<div class="flex p-4 place-content-between">

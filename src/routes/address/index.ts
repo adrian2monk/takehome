@@ -26,7 +26,7 @@ export type Transaction = {
 	block: number;
 	value: string;
 	status: State;
-	txs_date: Date;
+	txs_date: number;
 	txs_type?: TransactionType;
 };
 
