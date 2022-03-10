@@ -11,7 +11,7 @@ const txsMap = ({ to, value, status, timestamp, hash, block_number }): Transacti
 
 /** @type {import('./[id]').RequestHandler} */
 export async function get({ request, params }) {
-	const body: { id: string, count: number, user?: User, stats?: Stats[], txs?: Transaction[] } = { id: params.id, count: 10 };
+	const body: { id: string, page: number, count: number, user?: User, stats?: Stats[], txs?: Transaction[] } = { id: params.id, page: 1, count: 10 };
 	const search = new URL(request.url).searchParams;
 	const from = search.get('page') || '0';
 	const size = search.get('count') || '10';
@@ -44,6 +44,7 @@ export async function get({ request, params }) {
 				body.txs[i].txs_type = txsType;
 			});
 		body.stats = Array.from(stats.entries()).map(([name, count]) => ({ name, count }));
+		body.page = parseInt(from, 10) || 1;
 		body.count = txs.length;
         }
 

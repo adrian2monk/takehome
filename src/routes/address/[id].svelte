@@ -6,7 +6,9 @@ import { formatDistanceToNow } from 'date-fns';
 
 import type { Stats, User, Transaction } from ".";
 
-import SearchWithCount from "$lib/SearchWithCount.svelte";
+import SearchButton from "$lib/SearchButton.svelte";
+
+import PaginatedSearch from "$lib/PaginatedSearch.svelte";
 
 const assetsApi = 'https://assets.axieinfinity.com/explorer/images/contract-icon';
 
@@ -18,6 +20,8 @@ export let txs: Transaction[];
 
 export let id: string;
 
+export let page: number;
+
 export let count: number;
 
 type Asset = 'common-contract' | 'axs' | 'eth' | 'axie' | 'marketplace' | 'slp';
@@ -25,6 +29,8 @@ type Asset = 'common-contract' | 'axs' | 'eth' | 'axie' | 'marketplace' | 'slp';
 $: transactions = user && parseInt(user.total_transactions, 10);
 
 $: total = transactions < 100 ? transactions : 100;
+
+$: end = Math.ceil(transactions / count);
 
 function assetByType(txType: string): Asset {
         const input = txType.toLowerCase();
@@ -113,9 +119,19 @@ function labelByType(txType: string) {
         <div class="flex mx-2 my-3 md:text-md md:mx-4 xl:max-w-5xl xl:mx-auto">
                 <h2 class="grow text-sky-300">Sneak Peak of top transaction stats</h2>
                 <nav class="flex gap-1 rounded-md bg-slate-100 p-1">
-                        <SearchWithCount bind:id bind:count total={10} /> 
-                        <SearchWithCount bind:id bind:count total={50} /> 
-                        <SearchWithCount bind:id bind:count total={total} /> 
+                        {#if total > 10}
+                                <PaginatedSearch bind:id page={1} count={10}>
+                                        <SearchButton disabled={count === 10} value={10} />
+                                </PaginatedSearch>
+                        {/if}
+                        {#if total > 50}
+                                <PaginatedSearch bind:id page={1} count={50}>
+                                        <SearchButton disabled={count === 50} value={50} />
+                                </PaginatedSearch>
+                        {/if}
+                        <PaginatedSearch bind:id page={1} count={total}>
+                                <SearchButton disabled={count > 50} value={total} />
+                        </PaginatedSearch>
                 </nav>
         </div>
         <div class="grid mx-2 md:grid-cols-3 md:grid-flow-row md:gap-4 md:mx-4 xl:max-w-5xl xl:mx-auto">
@@ -129,7 +145,35 @@ function labelByType(txType: string) {
                         </section>
                 {/each}
         </div>
-        <table class="hidden  border-collapse w-full table-fixed mt-6 mx-2 lg:table lg:mx-4 xl:max-w-5xl xl:mx-auto">
+        <div class="flex flex-row-reverse gap-4 mt-6 mx-2 lg:mx-4 xl:max-w-5xl xl:mx-auto">
+                <div class="flex items-center">
+                        <PaginatedSearch bind:id bind:count page={0}>
+                                <button class="px-4 py-2 rounded-md hover:bg-slate-100 font-medium text-sky-500">First</button>
+                        </PaginatedSearch>
+                        <PaginatedSearch bind:id bind:count page={page - 1}>
+                                <button disabled={page - 1 < 0} class="px-4 py-2 rounded-md hover:bg-slate-100 font-medium text-sky-500">
+                                        <svg class="w-5 h-5 fill-sky-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                                                <!--! Font Awesome Pro 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+                                                <path d="M224 480c-8.188 0-16.38-3.125-22.62-9.375l-192-192c-12.5-12.5-12.5-32.75 0-45.25l192-192c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l169.4 169.4c12.5 12.5 12.5 32.75 0 45.25C240.4 476.9 232.2 480 224 480z"/>
+                                        </svg>
+                                </button>
+                        </PaginatedSearch>
+                        <span class="font-light text-slate-500">{page}&nbsp;/&nbsp;{end}</span>
+                        <PaginatedSearch bind:id bind:count page={page + 1}>
+                                <button disabled={page + 1 > end} class="px-4 py-2 rounded-md hover:bg-slate-100 font-medium text-sky-500">
+                                        <svg class="w-5 h-5 fill-sky-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                                                <!--! Font Awesome Pro 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+                                                <path d="M96 480c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L242.8 256L73.38 86.63c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l192 192c12.5 12.5 12.5 32.75 0 45.25l-192 192C112.4 476.9 104.2 480 96 480z"/>
+                                        </svg>
+                                </button>
+                        </PaginatedSearch>
+                        <PaginatedSearch bind:id bind:count page={end}>
+                                <button class="px-4 py-2 rounded-md hover:bg-slate-100 font-medium text-sky-500">End</button>
+                        </PaginatedSearch>
+                </div>
+                <h3 class="self-center font-light text-slate-500">Records</h3>
+        </div>
+        <table class="hidden border-collapse w-full table-fixed mx-2 mt-3 lg:table lg:mx-4 xl:max-w-5xl xl:mx-auto">
                 <thead class="rounded-md sticky top-0 whitespace-nowrap z-sticky">
                         <tr class="font-light text-left text-sm uppercase text-slate-500 bg-slate-100">
                                 <th class="p-2">tx hash</th>
@@ -159,5 +203,5 @@ function labelByType(txType: string) {
                                 </tr>
                         {/each}
                 </tbody>
-        </table>`
+        </table>
 {/if}
